@@ -24,8 +24,6 @@ website:
     
     # your social media handles
     right:
-      - icon: github
-        href: https://github.com/openscapes/quarto-website-tutorial
       - icon: folder-symlink
         href: https://www.marvinschmitt.com/blog/website-tutorial-quarto/
       - icon: twitter
@@ -36,20 +34,7 @@ website:
         aria-label: email
         href: "mailto:mail.marvinschmitt@gmail.com"  
   
-  sidebar:
-    style: "docked"
-    search: true
-    collapse-level: 1
-    contents:
-      - href: index.qmd
-        text: Welcome
-      - section: project
-        contents: 
-          - projects/index.qmd
-          - projects/prova.qmd
-      - learning-more.qmd
-      - href: transition-from-rmarkdown.qmd
-        text: Transition from Rmd
+  
 
 # Don't touch unless you know what you are doing :) ------------
   search: 
