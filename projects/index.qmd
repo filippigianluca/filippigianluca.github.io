@@ -26,3 +26,8 @@ I am creating a comprehensive and detailed history of the conflict that goes bey
 <a class="btn btn-primary" href="https://www.marvinschmitt.com/blog/website-tutorial-quarto/" role="button" target="_blank" style="padding: 15px 30px;">View the tutorial for this template (+ download link)</a>
 </div>
 ```
+
+
+
+For a demonstration of a line plot on a polar axis, see @fig-polar.
+
