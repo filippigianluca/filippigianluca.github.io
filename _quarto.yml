@@ -28,16 +28,16 @@ website:
     # your social media handles
     right:
       - icon: github
-        href: https://www.marvinschmitt.com/blog/website-tutorial-quarto/
+        href: https://github.com/filippigianluca
       - icon: folder-symlink
-        href: https://www.marvinschmitt.com/blog/website-tutorial-quarto/
+        href: https://filippigianluca.github.io/
       - icon: twitter
-        href: https://twitter.com/MarvinSchmittML
+        href: https://twitter.com/gianluca130991
       - icon: linkedin
-        href: https://www.linkedin.com/in/marvin-schmitt-a85b321a2/
+        href: https://www.linkedin.com/in/gianluca-filippi-14947390/
       - icon: envelope
         aria-label: email
-        href: "mailto:mail.marvinschmitt@gmail.com"  
+        href: "mailto:gian.filippi.91@gmail.com"  
   
   # sidebar:
   #   style: "docked"
