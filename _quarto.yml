@@ -18,7 +18,7 @@ website:
     left:
       - text: "Projects"
         href: projects/index.qmd
-      - text: Blog
+      - text: "Blog"
         href: blog.qmd 
       - text: "Photography"
         href: photography/index.qmd
@@ -39,22 +39,22 @@ website:
         aria-label: email
         href: "mailto:mail.marvinschmitt@gmail.com"  
   
-  sidebar:
-    style: "docked"
-    # collapse-level: 2
-    search: true
-    contents:
-      - index.qmd
-      - section: "Basic"
-        contents:
-          - projects/index.qmd
-          - projects/prova.ipynb
-          - posts/new_blog_post/post.qmd
-      - section: "Layout"
-        contents:
-          - layout.qmd
-          - layout-knitr.qmd
-          - layout-jupyter.qmd
+  # sidebar:
+  #   style: "docked"
+  #   # collapse-level: 2
+  #   search: true
+  #   contents:
+  #     - index.qmd
+  #     - section: "Basic"
+  #       contents:
+  #         - projects/index.qmd
+  #         - projects/prova.ipynb
+  #         - blog/new_blog_post/post.qmd
+  #     - section: "Layout"
+  #       contents:
+  #         - layout.qmd
+  #         - layout-knitr.qmd
+  #         - layout-jupyter.qmd
 
 # Don't touch unless you know what you are doing :) ------------
   search: 
