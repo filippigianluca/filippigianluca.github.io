@@ -12,6 +12,7 @@ website:
   navbar:
     pinned: true
     logo: /img/logo.png
+    collapse-below: lg
     
     # your sub-pages
     left:
@@ -24,6 +25,8 @@ website:
     
     # your social media handles
     right:
+      - icon: github
+        href: https://www.marvinschmitt.com/blog/website-tutorial-quarto/
       - icon: folder-symlink
         href: https://www.marvinschmitt.com/blog/website-tutorial-quarto/
       - icon: twitter
@@ -34,7 +37,21 @@ website:
         aria-label: email
         href: "mailto:mail.marvinschmitt@gmail.com"  
   
-  
+  sidebar:
+    style: "docked"
+    # collapse-level: 2
+    search: true
+    contents:
+      - index.qmd
+      - section: "Basic"
+        contents:
+          - projects/index.qmd
+          - projects/prova.ipynb
+      - section: "Layout"
+        contents:
+          - layout.qmd
+          - layout-knitr.qmd
+          - layout-jupyter.qmd
 
 # Don't touch unless you know what you are doing :) ------------
   search: 
