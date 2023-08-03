@@ -18,6 +18,8 @@ website:
     left:
       - text: "Projects"
         href: projects/index.qmd
+      - text: Blog
+        href: blog.qmd 
       - text: "Photography"
         href: photography/index.qmd
       - text: "CV"
@@ -47,6 +49,7 @@ website:
         contents:
           - projects/index.qmd
           - projects/prova.ipynb
+          - posts/new_blog_post/post.qmd
       - section: "Layout"
         contents:
           - layout.qmd
