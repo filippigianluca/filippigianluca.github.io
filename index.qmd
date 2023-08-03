@@ -6,16 +6,16 @@ about:
   links:
     - icon: twitter
       text: Twitter
-      href: https://twitter.com/MarvinSchmittML
+      href: https://twitter.com/gianluca130991
     - icon: github
       text: Github
-      href: https://github.com/marvinschmitt
+      href: https://github.com/filippigianluca
     - icon: linkedin
       text: LinkedIn
-      href: https://www.linkedin.com/in/marvin-schmitt-a85b321a2/
+      href: https://www.linkedin.com/in/gianluca-filippi-14947390/
     - icon: envelope
       text: Email
-      href: "mailto:mail.marvinschmitt@gmail.com"  
+      href: "mailto:gian.filippi.91@gmail.com"  
 ---
 
 ::: {#about-block}
