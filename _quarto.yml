@@ -41,8 +41,8 @@ website:
       - icon: envelope
         aria-label: email
         href: "mailto:gian.filippi.91@gmail.com"  
-      # - icon: rss
-      #   href: blog.xml
+      - icon: rss
+        href: blog.xml
   
   # sidebar:
   #   style: "docked"
