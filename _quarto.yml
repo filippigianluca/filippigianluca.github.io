@@ -5,6 +5,7 @@ website:
   title: "Gianluca"                                # Your name
   description: "Gandalf is a renowned wizard and scholar of Middle-earth"   # A brief slogan (optional)
   image: img/my_image.jpg
+  site-url: https://filippigianluca.github.io
   
   favicon: img/favicon.png
   
@@ -19,7 +20,9 @@ website:
       - text: "Projects"
         href: projects/index.qmd
       - text: "Blog"
-        href: index_blog.qmd 
+        href: blog.qmd 
+      - text: "Archive"
+        href: archive.qmd 
       - text: "Photography"
         href: photography/index.qmd
       - text: "CV"
@@ -38,6 +41,8 @@ website:
       - icon: envelope
         aria-label: email
         href: "mailto:gian.filippi.91@gmail.com"  
+      # - icon: rss
+      #   href: blog.xml
   
   # sidebar:
   #   style: "docked"

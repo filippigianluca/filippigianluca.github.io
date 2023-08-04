@@ -6,14 +6,16 @@ freeze: true
 title-block-banner: false 
 
 toc: true 
-toc-depth: 2 
+toc-depth: 3
+
+page-layout: article
 
 author: 'Gianluca Filippi' 
 
 
 comments: 
   utterances: 
-    repo: AlbertRapp/blogComments 
+    repo: filippigianluca/blogComments
 
 # Include something after every blog post with hand-made html-file
 format:
