@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://filippigianluca.github.io/index.html</loc>
-    <lastmod>2023-08-04T21:19:46.708Z</lastmod>
+    <lastmod>2023-08-04T21:23:52.439Z</lastmod>
   </url>
   <url>
     <loc>https://filippigianluca.github.io/cv/index.html</loc>
@@ -23,5 +23,13 @@
   <url>
     <loc>https://filippigianluca.github.io/blog/new_blog_post/post.html</loc>
     <lastmod>2023-08-04T21:19:52.548Z</lastmod>
+  </url>
+  <url>
+    <loc>https://filippigianluca.github.io/blog/notebook_post/prova.html</loc>
+    <lastmod>2023-08-04T21:24:12.968Z</lastmod>
+  </url>
+  <url>
+    <loc>https://filippigianluca.github.io/photography/index.html</loc>
+    <lastmod>2023-08-04T21:25:21.814Z</lastmod>
   </url>
 </urlset>
