@@ -5,5 +5,20 @@
       "/blog/notebook_post/prova.html",
       "/blog/new_blog_post/post.html"
     ]
+  },
+  {
+    "listing": "/blog/index.html",
+    "items": []
+  },
+  {
+    "listing": "/index_blog.html",
+    "items": [
+      "/blog/notebook_post/prova.html",
+      "/blog/new_blog_post/post.html"
+    ]
+  },
+  {
+    "listing": "/blog/index_blog.html",
+    "items": []
   }
 ]
