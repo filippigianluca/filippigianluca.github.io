@@ -15,7 +15,7 @@
 <link>https://filippigianluca.github.io/blog.html</link>
 </image>
 <generator>quarto-1.3.433</generator>
-<lastBuildDate>Tue, 31 May 2022 22:00:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 31 May 2022 23:00:00 GMT</lastBuildDate>
 <item>
   <title>This is a dummy blog posts</title>
   <dc:creator>Gianluca Filippi</dc:creator>
@@ -43,7 +43,7 @@
   <category>123</category>
   <category>Second Tag</category>
   <guid>https://filippigianluca.github.io/blog/new_blog_post/post.html</guid>
-  <pubDate>Tue, 31 May 2022 22:00:00 GMT</pubDate>
+  <pubDate>Tue, 31 May 2022 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>matplotlib demo</title>
@@ -125,7 +125,7 @@ font-style: inherit;">True</span>)</span>
 
  ]]></description>
   <guid>https://filippigianluca.github.io/blog/notebook_post/prova.html</guid>
-  <pubDate>Fri, 04 Aug 2023 21:10:01 GMT</pubDate>
+  <pubDate>Sat, 13 Jan 2024 17:39:47 GMT</pubDate>
 </item>
 </channel>
 </rss>
