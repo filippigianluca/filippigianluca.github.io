@@ -14,8 +14,8 @@
 <title>Gianluca</title>
 <link>https://filippigianluca.github.io/blog.html</link>
 </image>
-<generator>quarto-1.3.433</generator>
-<lastBuildDate>Tue, 31 May 2022 23:00:00 GMT</lastBuildDate>
+<generator>quarto-1.6.39</generator>
+<lastBuildDate>Tue, 31 May 2022 22:00:00 GMT</lastBuildDate>
 <item>
   <title>This is a dummy blog posts</title>
   <dc:creator>Gianluca Filippi</dc:creator>
@@ -43,7 +43,7 @@
   <category>123</category>
   <category>Second Tag</category>
   <guid>https://filippigianluca.github.io/blog/new_blog_post/post.html</guid>
-  <pubDate>Tue, 31 May 2022 23:00:00 GMT</pubDate>
+  <pubDate>Tue, 31 May 2022 22:00:00 GMT</pubDate>
 </item>
 <item>
   <title>matplotlib demo</title>
@@ -53,8 +53,9 @@
 
 
 
-<div class="cell page-columns page-full" data-execution_count="1">
-<details>
+
+<div id="cell-fig-polar" class="cell page-columns page-full" data-execution_count="1">
+<details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
 background-color: null;
@@ -112,10 +113,14 @@ font-style: inherit;">True</span>)</span>
 <span id="cb1-12">plt.show()</span></code></pre></div>
 </details>
 <div class="cell-output cell-output-display page-columns page-full">
-<div id="fig-polar" class="quarto-figure quarto-figure-center anchored page-columns page-full">
-<figure class="figure page-columns page-full">
-<p><img src="https://filippigianluca.github.io/blog/notebook_post/prova_files/figure-html/fig-polar-output-1.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption margin-caption">Figure&nbsp;1: A line plot on a polar axis</figcaption>
+<div id="fig-polar" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://filippigianluca.github.io/blog/notebook_post/prova_files/figure-html/fig-polar-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A line plot on a polar axis
+</figcaption>
 </figure>
 </div>
 </div>
@@ -125,7 +130,1570 @@ font-style: inherit;">True</span>)</span>
 
  ]]></description>
   <guid>https://filippigianluca.github.io/blog/notebook_post/prova.html</guid>
-  <pubDate>Sat, 13 Jan 2024 17:39:47 GMT</pubDate>
+  <pubDate>Tue, 17 Dec 2024 22:32:53 GMT</pubDate>
+</item>
+<item>
+  <title>matplotlib demo</title>
+  <dc:creator>Gianluca Filippi</dc:creator>
+  <link>https://filippigianluca.github.io/blog/paradoxes/Birthday_paradox.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p><em>Problem Definition</em> The Birthday Paradox asks the question: what is the probability p(n) that any two people share a birthday given a group of people of size n.&nbsp;More specifically, we all ask how many people are required to have at least a 50% chance that two people share a birthday, that is p(n) &gt; 0.5.</p>
+<p><strong>Structure of the article</strong> 1. uniform / non uniform distribution 2. mathematical derivation / simulation</p>
+<p><strong>Key takeaways</strong> This a good example to illustrate the following concepts: 1. Law of Total Probability 2. Chain Rule of probability 3. permutation</p>
+<div id="cell-2" class="cell" data-executioninfo="{&quot;elapsed&quot;:285,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1703936253141,&quot;user&quot;:{&quot;displayName&quot;:&quot;Gianluca Filippi&quot;,&quot;userId&quot;:&quot;04710549569458780508&quot;},&quot;user_tz&quot;:-60}" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> chaospy</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> tqdm <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> tqdm</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> math</span>
+<span id="cb1-5"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># import scipy.special</span></span>
+<span id="cb1-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># from scipy.special import comb</span></span>
+<span id="cb1-8"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> scipy.stats <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> norm</span>
+<span id="cb1-9"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> math <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> comb</span></code></pre></div>
+</details>
+</div>
+</section>
+<section id="mathematical-derivation-for-uniform-birthdays-distribution" class="level1">
+<h1>Mathematical Derivation for Uniform birthdays distribution</h1>
+<p>using the classical approach to probability (geometric approach) is used.</p>
+<p>Consider first the probability of the event ‘A’ that k people do not share a birthday: <img src="https://latex.codecogs.com/png.latex?%20P(A)%20=%20%5Cfrac%7B365%7D%7B365%7D%20*%20%5Cfrac%7B364%7D%7B365%7D%20*%20%5Cfrac%7B363%7D%7B365%7D%20*%20...%20*%20%5Cfrac%7B365-k+1%7D%7B365%7D%20=%20%5Cfrac%7B365%20!%7D%7B365%5Ek%20(365-k)%20!%7D%20"></p>
+<p>the same results can be derived using the binomial coefficient to calculate the number of combinations without permutations <img src="https://latex.codecogs.com/png.latex?V_%7Bn%20r%7D">: <img src="https://latex.codecogs.com/png.latex?%20V_%7Bn%20r%7D%20=%5Cfrac%7Bn%20!%7D%7B(n-k)%20!%7D=%5Cfrac%7B365%20!%7D%7B(365-k)%20!%7D%20"> and normalising it with the total number of possible combinations <img src="https://latex.codecogs.com/png.latex?V_t">: <img src="https://latex.codecogs.com/png.latex?%20V_t%20=n%5Ek=365%5E%7Bk%7D%20"> <img src="https://latex.codecogs.com/png.latex?%20P(A)%20=%5Cfrac%7BV_%7Bn%20r%7D%7D%7BV_t%7D%20"></p>
+<p>The probability of the event ‘B’ that k people share a birthday is the complement of the event ‘A’: <img src="https://latex.codecogs.com/png.latex?%20P(B)%20=1-P(A)%20"></p>
+<p>Code and plot:</p>
+<div id="cell-4" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">Pb <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb2-2">Nperson <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb2-3">time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, Nperson, Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-4"></span>
+<span id="cb2-5"></span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate probabilities</span></span>
+<span id="cb2-7"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> k <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>):</span>
+<span id="cb2-8">    Vnr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(comb(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365</span>, k) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> math.factorial(k)) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#, exact=True, repetition=True)</span></span>
+<span id="cb2-9">    Vt <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">**</span>k</span>
+<span id="cb2-10">    Pa <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Vnr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> Vt</span>
+<span id="cb2-11">    Pb.append( <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> Pa )</span>
+<span id="cb2-12"></span>
+<span id="cb2-13"></span>
+<span id="cb2-14"></span>
+<span id="cb2-15"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Find the x-value (number of people) where probability is closest to 0.5</span></span>
+<span id="cb2-16">closest_index <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.argmin(np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">abs</span>(np.array(Pb) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Find the closest value</span></span>
+<span id="cb2-17">x_at_0_5 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> time[closest_index]</span>
+<span id="cb2-18">y_at_0_5 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Pb[closest_index]</span>
+<span id="cb2-19"></span>
+<span id="cb2-20"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the results</span></span>
+<span id="cb2-21">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>))</span>
+<span id="cb2-22">plt.plot(time, Pb, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Probability Curve"</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"blue"</span>)</span>
+<span id="cb2-23">plt.axvline(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>x_at_0_5, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'r'</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'P=0.5 at ~</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(x_at_0_5)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> people'</span>)</span>
+<span id="cb2-24">plt.scatter([x_at_0_5], [y_at_0_5], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Highlight the point</span></span>
+<span id="cb2-25"></span>
+<span id="cb2-26"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Annotate the plot with the x-value</span></span>
+<span id="cb2-27">plt.text(x_at_0_5 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, y_at_0_5, <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(x_at_0_5)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> People'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'left'</span>)</span>
+<span id="cb2-28"></span>
+<span id="cb2-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add labels, title, legend, and grid</span></span>
+<span id="cb2-30">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Number of People'</span>)</span>
+<span id="cb2-31">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Probability of At Least One Shared Birthday'</span>)</span>
+<span id="cb2-32">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Birthday Paradox Probability'</span>)</span>
+<span id="cb2-33">plt.legend()</span>
+<span id="cb2-34">plt.grid()</span>
+<span id="cb2-35"></span>
+<span id="cb2-36"></span>
+<span id="cb2-37">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://filippigianluca.github.io/blog/paradoxes/Birthday_paradox_files/figure-html/cell-3-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>and plot results</p>
+</section>
+<section id="mathematical-derivation-for-general-birthdays-distribution" class="level1">
+<h1>Mathematical Derivation for general birthdays distribution</h1>
+<p>add text here</p>
+</section>
+<section id="simulation-approach-for-uniform-birthdays-distribution" class="level1">
+<h1>Simulation Approach for Uniform birthdays distribution</h1>
+<p>we first define here a the distribution functions that will be then used in the simulation. Both uniform and non-uniform.</p>
+<div id="cell-8" class="cell" data-executioninfo="{&quot;elapsed&quot;:873,&quot;status&quot;:&quot;ok&quot;,&quot;timestamp&quot;:1703936399503,&quot;user&quot;:{&quot;displayName&quot;:&quot;Gianluca Filippi&quot;,&quot;userId&quot;:&quot;04710549569458780508&quot;},&quot;user_tz&quot;:-60}" data-outputid="99ff2ade-9b06-42c9-b0f9-db9ca7c00dce" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Define the user distribution functions</span></span>
+<span id="cb3-2"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> cdf(x_loc, lo, up):</span>
+<span id="cb3-3">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Cumulative distribution function."""</span></span>
+<span id="cb3-4">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> (x_loc<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>lo)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>(up<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>lo)</span>
+<span id="cb3-5"></span>
+<span id="cb3-6"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> lower(lo, up):</span>
+<span id="cb3-7">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Lower bounds function."""</span></span>
+<span id="cb3-8">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> lo</span>
+<span id="cb3-9"></span>
+<span id="cb3-10"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> upper(lo, up):</span>
+<span id="cb3-11">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">"""Upper bounds function."""</span></span>
+<span id="cb3-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> up</span>
+<span id="cb3-13"></span>
+<span id="cb3-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Create the UserDistribution</span></span>
+<span id="cb3-15">user_distribution <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> chaospy.UserDistribution(</span>
+<span id="cb3-16">    cdf<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>cdf, lower<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>lower, upper<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>upper, parameters<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">dict</span>(lo<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, up<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">364</span>))</span>
+<span id="cb3-17"></span>
+<span id="cb3-18"></span>
+<span id="cb3-19"></span>
+<span id="cb3-20"></span>
+<span id="cb3-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set up subplots with a common title and tight layout</span></span>
+<span id="cb3-22">fig, axs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb3-23">fig.suptitle(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Custom User Distribution Visualization"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb3-24"></span>
+<span id="cb3-25"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Subplot 1: Histogram of random samples</span></span>
+<span id="cb3-26">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Binned Random Samples"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb3-27">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].hist(user_distribution.sample(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100000</span>), bins<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"skyblue"</span>, edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>)</span>
+<span id="cb3-28">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>)</span>
+<span id="cb3-29">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Frequency"</span>)</span>
+<span id="cb3-30">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--"</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb3-31"></span>
+<span id="cb3-32"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Subplot 2: Probability Density Function (PDF)</span></span>
+<span id="cb3-33">x_loc <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>)</span>
+<span id="cb3-34">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Probability Density Function (PDF)"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb3-35">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].plot(x_loc, user_distribution.pdf(x_loc), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkorange"</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb3-36">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>)</span>
+<span id="cb3-37">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density"</span>)</span>
+<span id="cb3-38">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--"</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb3-39"></span>
+<span id="cb3-40"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Subplot 3: Cumulative Distribution Function (CDF)</span></span>
+<span id="cb3-41">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Cumulative Distribution Function (CDF)"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb3-42">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].plot(x_loc, user_distribution.cdf(x_loc), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"forestgreen"</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb3-43">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>)</span>
+<span id="cb3-44">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Cumulative Probability"</span>)</span>
+<span id="cb3-45">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--"</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb3-46"></span>
+<span id="cb3-47"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust layout for better spacing</span></span>
+<span id="cb3-48">plt.tight_layout(rect<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.95</span>])</span>
+<span id="cb3-49">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://filippigianluca.github.io/blog/paradoxes/Birthday_paradox_files/figure-html/cell-4-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="simulation-of-uniform-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="simulation-of-uniform-distribution">Simulation of uniform distribution</h3>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"></span>
+<span id="cb4-2">::: {<span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#cell-10 .cell execution_count=4}</span></span>
+<span id="cb4-3">``` {.python .cell<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>code}</span>
+<span id="cb4-4">iteration <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span></span>
+<span id="cb4-5">Nperson <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb4-6"></span>
+<span id="cb4-7">duplicate_rate <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb4-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Simulate the Birthday Paradox for group sizes 2 to 99</span></span>
+<span id="cb4-9"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> iGroupSize <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)):</span>
+<span id="cb4-10">    duplicates_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb4-11">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(iteration):</span>
+<span id="cb4-12">        birthdays <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.random.randint(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365</span>, size<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>iGroupSize)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Randomize group birthdays (0-364)</span></span>
+<span id="cb4-13">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># birthdays = np.clip(np.random.normal(180, 150, size=iGroupSize), 0, 364).astype(int)  # Randomize group birthdays (0-364)</span></span>
+<span id="cb4-14">        </span>
+<span id="cb4-15">        </span>
+<span id="cb4-16">        uniques, counts <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.unique(birthdays, return_counts<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Unique birthdays and their counts</span></span>
+<span id="cb4-17">        duplicates <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> uniques[counts <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Find duplicate birthdays</span></span>
+<span id="cb4-18">        duplicates_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> np.size(duplicates) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Count if duplicates exist</span></span>
+<span id="cb4-19"></span>
+<span id="cb4-20">    duplicate_rate.append(duplicates_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> iteration)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Probability of a duplicate in this group size</span></span>
+<span id="cb4-21"></span>
+<span id="cb4-22"></span>
+<span id="cb4-23"></span>
+<span id="cb4-24"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the results</span></span>
+<span id="cb4-25">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>))</span>
+<span id="cb4-26">plt.plot(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), duplicate_rate, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'royalblue'</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Duplicate Probability Simulation"</span>)</span>
+<span id="cb4-27">plt.plot(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), Pb, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'green'</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Duplicate Probability"</span>)</span>
+<span id="cb4-28"></span>
+<span id="cb4-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Highlight where the probability exceeds 50%</span></span>
+<span id="cb4-30">threshold_x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.argmax(np.array(duplicate_rate) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Find the group size where P &gt; 0.5</span></span>
+<span id="cb4-31">threshold_y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> duplicate_rate[threshold_x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Corresponding probability</span></span>
+<span id="cb4-32"></span>
+<span id="cb4-33">plt.axvline(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>threshold_x, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"50% Probability at </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>threshold_x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> People"</span>)</span>
+<span id="cb4-34">plt.scatter(threshold_x, threshold_y, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, zorder<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add point on the curve</span></span>
+<span id="cb4-35"></span>
+<span id="cb4-36"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Annotate the plot with the x-value</span></span>
+<span id="cb4-37">plt.text(threshold_x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, threshold_y, <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(threshold_x)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> People'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'left'</span>)</span>
+<span id="cb4-38"></span>
+<span id="cb4-39"></span>
+<span id="cb4-40"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Labels and title</span></span>
+<span id="cb4-41">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Group Size (Number of People)'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb4-42">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Probability of At Least One Shared Birthday'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb4-43">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Birthday Paradox Simulation'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb4-44"></span>
+<span id="cb4-45"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Grid and ticks for better readability</span></span>
+<span id="cb4-46">plt.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb4-47">plt.xticks(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">101</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust x-ticks for better clarity</span></span>
+<span id="cb4-48">plt.yticks(np.arange(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust y-ticks</span></span>
+<span id="cb4-49"></span>
+<span id="cb4-50"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add a legend</span></span>
+<span id="cb4-51">plt.legend()</span>
+<span id="cb4-52"></span>
+<span id="cb4-53"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Show the plot</span></span>
+<span id="cb4-54">plt.tight_layout()</span>
+<span id="cb4-55">plt.show()</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>100%|██████████| 99/99 [00:00&lt;00:00, 107.45it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://filippigianluca.github.io/blog/paradoxes/Birthday_paradox_files/figure-html/cell-5-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<p>:::</p>
+<div id="cell-11" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"></span>
+<span id="cb6-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Parameters for the normal distribution</span></span>
+<span id="cb6-3">mean <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span></span>
+<span id="cb6-4">std_dev <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span></span>
+<span id="cb6-5">N <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100000</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Number of samples</span></span>
+<span id="cb6-6"></span>
+<span id="cb6-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate random samples from a normal distribution and clip values to [0, 364]</span></span>
+<span id="cb6-8">samples <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.clip(np.random.normal(mean, std_dev, size<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>N), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">364</span>)</span>
+<span id="cb6-9"></span>
+<span id="cb6-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Set up subplots with a common title and tight layout</span></span>
+<span id="cb6-11">fig, axs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>, figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb6-12">fig.suptitle(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Normal Distribution Visualization (Clipped to [0, 364])"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb6-13"></span>
+<span id="cb6-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Subplot 1: Histogram of random samples</span></span>
+<span id="cb6-15">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Binned Random Samples"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb6-16">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].hist(samples, bins<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">30</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"skyblue"</span>, edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>)</span>
+<span id="cb6-17">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>)</span>
+<span id="cb6-18">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Frequency"</span>)</span>
+<span id="cb6-19">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--"</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb6-20"></span>
+<span id="cb6-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Subplot 2: Probability Density Function (PDF)</span></span>
+<span id="cb6-22">x_loc <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">364</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>)</span>
+<span id="cb6-23">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Probability Density Function (PDF)"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb6-24">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].plot(x_loc, norm.pdf(x_loc, mean, std_dev), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"darkorange"</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb6-25">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>)</span>
+<span id="cb6-26">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Density"</span>)</span>
+<span id="cb6-27">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--"</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb6-28"></span>
+<span id="cb6-29"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Subplot 3: Cumulative Distribution Function (CDF)</span></span>
+<span id="cb6-30">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Cumulative Distribution Function (CDF)"</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>)</span>
+<span id="cb6-31">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].plot(x_loc, norm.cdf(x_loc, mean, std_dev), color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"forestgreen"</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb6-32">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Value"</span>)</span>
+<span id="cb6-33">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Cumulative Probability"</span>)</span>
+<span id="cb6-34">axs[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>].grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"--"</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb6-35"></span>
+<span id="cb6-36"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust layout for better spacing</span></span>
+<span id="cb6-37">plt.tight_layout(rect<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.95</span>])</span>
+<span id="cb6-38">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://filippigianluca.github.io/blog/paradoxes/Birthday_paradox_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="cell-12" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1">iteration <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span></span>
+<span id="cb7-2">Nperson <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span></span>
+<span id="cb7-3"></span>
+<span id="cb7-4">duplicate_rate <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb7-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Simulate the Birthday Paradox for group sizes 2 to 99</span></span>
+<span id="cb7-6"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> iGroupSize <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> tqdm(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)):</span>
+<span id="cb7-7">    duplicates_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb7-8">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(iteration):</span>
+<span id="cb7-9">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># birthdays = np.random.randint(365, size=iGroupSize)  # Randomize group birthdays (0-364)</span></span>
+<span id="cb7-10">        birthdays <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.clip(np.random.normal(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">150</span>, size<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>iGroupSize), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">364</span>).astype(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Randomize group birthdays (0-364)</span></span>
+<span id="cb7-11">        </span>
+<span id="cb7-12">        </span>
+<span id="cb7-13">        uniques, counts <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.unique(birthdays, return_counts<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Unique birthdays and their counts</span></span>
+<span id="cb7-14">        duplicates <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> uniques[counts <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Find duplicate birthdays</span></span>
+<span id="cb7-15">        duplicates_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> np.size(duplicates) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Count if duplicates exist</span></span>
+<span id="cb7-16"></span>
+<span id="cb7-17">    duplicate_rate.append(duplicates_counter <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> iteration)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Probability of a duplicate in this group size</span></span>
+<span id="cb7-18"></span>
+<span id="cb7-19"></span>
+<span id="cb7-20"></span>
+<span id="cb7-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Plot the results</span></span>
+<span id="cb7-22">plt.figure(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>))</span>
+<span id="cb7-23">plt.plot(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), duplicate_rate, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'royalblue'</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Duplicate Probability Simulation"</span>)</span>
+<span id="cb7-24">plt.plot(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, Nperson<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), Pb, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'green'</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Duplicate Probability"</span>)</span>
+<span id="cb7-25"></span>
+<span id="cb7-26"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Highlight where the probability exceeds 50%</span></span>
+<span id="cb7-27">threshold_x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.argmax(np.array(duplicate_rate) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Find the group size where P &gt; 0.5</span></span>
+<span id="cb7-28">threshold_y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> duplicate_rate[threshold_x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>]  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Corresponding probability</span></span>
+<span id="cb7-29"></span>
+<span id="cb7-30">plt.axvline(x<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>threshold_x, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"50% Probability at </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>threshold_x<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> People"</span>)</span>
+<span id="cb7-31">plt.scatter(threshold_x, threshold_y, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, zorder<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add point on the curve</span></span>
+<span id="cb7-32"></span>
+<span id="cb7-33"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Annotate the plot with the x-value</span></span>
+<span id="cb7-34">plt.text(threshold_x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, threshold_y, <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(threshold_x)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> People'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'red'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">12</span>, ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'left'</span>)</span>
+<span id="cb7-35"></span>
+<span id="cb7-36"></span>
+<span id="cb7-37"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Labels and title</span></span>
+<span id="cb7-38">plt.xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Group Size (Number of People)'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb7-39">plt.ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Probability of At Least One Shared Birthday'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>)</span>
+<span id="cb7-40">plt.title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Birthday Paradox Simulation'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>)</span>
+<span id="cb7-41"></span>
+<span id="cb7-42"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Grid and ticks for better readability</span></span>
+<span id="cb7-43">plt.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, linestyle<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>)</span>
+<span id="cb7-44">plt.xticks(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">101</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust x-ticks for better clarity</span></span>
+<span id="cb7-45">plt.yticks(np.arange(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.1</span>))  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Adjust y-ticks</span></span>
+<span id="cb7-46"></span>
+<span id="cb7-47"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Add a legend</span></span>
+<span id="cb7-48">plt.legend()</span>
+<span id="cb7-49"></span>
+<span id="cb7-50"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Show the plot</span></span>
+<span id="cb7-51">plt.tight_layout()</span>
+<span id="cb7-52">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>100%|██████████| 99/99 [00:00&lt;00:00, 107.63it/s]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://filippigianluca.github.io/blog/paradoxes/Birthday_paradox_files/figure-html/cell-7-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>and plot results</p>
+
+
+</section>
+</section>
+
+ ]]></description>
+  <guid>https://filippigianluca.github.io/blog/paradoxes/Birthday_paradox.html</guid>
+  <pubDate>Tue, 17 Dec 2024 22:32:53 GMT</pubDate>
+</item>
+<item>
+  <title>matplotlib demo</title>
+  <dc:creator>Gianluca Filippi</dc:creator>
+  <link>https://filippigianluca.github.io/blog/paradoxes/prova.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<div id="cell-fig-polar" class="cell page-columns page-full" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-3"></span>
+<span id="cb1-4">r <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.arange(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>)</span>
+<span id="cb1-5">theta <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.pi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> r</span>
+<span id="cb1-6">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(</span>
+<span id="cb1-7">  subplot_kw <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'projection'</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'polar'</span>} </span>
+<span id="cb1-8">)</span>
+<span id="cb1-9">ax.plot(theta, r)</span>
+<span id="cb1-10">ax.set_rticks([<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>])</span>
+<span id="cb1-11">ax.grid(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb1-12">plt.show()</span></code></pre></div>
+</details>
+<div class="cell-output cell-output-display page-columns page-full">
+<div id="fig-polar" class="quarto-float quarto-figure quarto-figure-center anchored page-columns page-full">
+<figure class="quarto-float quarto-float-fig figure page-columns page-full">
+<div aria-describedby="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="https://filippigianluca.github.io/blog/paradoxes/prova_files/figure-html/fig-polar-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-margin quarto-float-caption quarto-float-fig margin-caption" id="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A line plot on a polar axis
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+
+
+ ]]></description>
+  <guid>https://filippigianluca.github.io/blog/paradoxes/prova.html</guid>
+  <pubDate>Tue, 17 Dec 2024 22:32:53 GMT</pubDate>
 </item>
 </channel>
 </rss>

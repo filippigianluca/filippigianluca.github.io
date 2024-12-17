@@ -3,6 +3,8 @@
     "listing": "/blog.html",
     "items": [
       "/blog/notebook_post/prova.html",
+      "/blog/paradoxes/Birthday_paradox.html",
+      "/blog/paradoxes/prova.html",
       "/blog/new_blog_post/post.html"
     ]
   },
